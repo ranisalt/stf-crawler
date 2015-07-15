@@ -6,23 +6,21 @@ from stf.spiders.juris import JurisSpider
 
 
 class CrawlerWorker(Process):
-    def __init__(self, flt, results):
+    def __init__(self, flt):
         Process.__init__(self)
         self.flt = flt
         self.process = CrawlerProcess(get_project_settings())
-        self.results = results
 
     def run(self):
         self.process.crawl(JurisSpider, flt=self.flt)
         self.process.start()
-        self.results.put('\n'.join(self.process.spider_loader._spiders['juris'].output))
+        with open('static/%s.txt' % (self.flt,), 'w') as fp:
+            fp.writelines(self.process.spider_loader._spiders['juris'].output)
 
 
 def crawl(flt):
-    results = Queue()
-    worker = CrawlerWorker(flt, results)
+    worker = CrawlerWorker(flt)
     worker.start()
-    return results.get()
 
 
 app = flask.Flask(__name__)
@@ -36,9 +34,8 @@ def index():
 @app.route('/flt/', methods=['GET'])
 def get_doutrinas():
     flt = flask.request.args.get('filter')
-    response = flask.make_response(crawl(flt))
-    response.headers['Content-Disposition'] = 'attachment; filename=doutrinas.txt'
-    return response
+    crawl(flt)
+    return flask.redirect('/')
 
 
 if __name__ == '__main__':
