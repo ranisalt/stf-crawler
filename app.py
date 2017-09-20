@@ -1,5 +1,6 @@
 import flask
 from multiprocessing import Process, Queue
+from os import path
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from stf.spiders.juris import JurisSpider
@@ -14,7 +15,7 @@ class CrawlerWorker(Process):
     def run(self):
         self.process.crawl(JurisSpider, flt=self.flt)
         self.process.start()
-        with open('static/%s.txt' % (self.flt,), 'w') as fp:
+        with open(path.join(path.dirname(path.abspath(__file__)), 'static', '{}.txt'.format(self.flt)), 'w') as fp:
             fp.writelines(self.process.spider_loader._spiders['juris'].output)
 
 
