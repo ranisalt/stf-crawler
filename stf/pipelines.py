@@ -10,5 +10,4 @@ from __future__ import print_function
 
 class StfPipeline(object):
     def process_item(self, item, spider):
-        spider.output.append(item['line'].encode('utf8'))
-        return item
+        return item["line"].encode("utf8")
