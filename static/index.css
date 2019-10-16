@@ -6,11 +6,11 @@
 
 html,
 body {
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+    url('tiro.min.jpg') no-repeat center/cover fixed;
   display: flex;
   justify-content: center;
   min-height: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
-    url('jb.jpg') no-repeat center/cover fixed;
 }
 
 .wrapper {
