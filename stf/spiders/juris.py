@@ -64,4 +64,6 @@ class JurisSpider(Spider):
             )
             .extract()
         ):
-            yield {"lines": d.strip()}
+            lines = d.strip()
+            if lines:
+                yield {"lines": lines}
