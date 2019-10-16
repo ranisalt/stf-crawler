@@ -17,6 +17,8 @@ class JurisSpider(scrapy.Spider):
         self.query = parse_qs(query)
 
     def start_requests(self):
+        if self.base_url[1] != "stf.jus.br":
+            raise scrapy.exceptions.NotSupported()
         yield self.make_requests_from_url(self.make_url(1))
 
     def make_url(self, page: int):
