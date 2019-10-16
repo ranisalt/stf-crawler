@@ -35,7 +35,7 @@ class JurisSpider(Spider):
     def start_requests(self):
         components = urlparse(self.start_url)
         query = parse_qs(components[4])
-        query.pop("pagina")
+        query.pop("pagina", None)
 
         def parse_start_url(res):
             match = re.search(
