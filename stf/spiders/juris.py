@@ -12,16 +12,11 @@ from scrapy import Spider
 from scrapy.http import Request
 from scrapy.selector import Selector
 
+par = re.compile(r"(?<=\.)\s*$", flags=re.MULTILINE)
 ref = re.compile(r"<(https?:[^>]*)>")
 
 
-def rebuild(components, query):
-    return urlunparse(
-        (*components[:4], urlencode(query, doseq=True), *components[5:])
-    )
-
-
-def repl(match):
+def repl_ref(match):
     return quote(match.group(0))
 
 
@@ -31,12 +26,21 @@ class JurisSpider(Spider):
 
     def __init__(self, url):
         self.start_url = url
+        self.components = urlparse(self.start_url)
+        query = parse_qs(self.components[4])
+        query.pop("pagina", None)
+        self.query = query
+
+    def rebuild(self, query):
+        return urlunparse(
+            (
+                *self.components[:4],
+                urlencode(query, doseq=True),
+                *self.components[5:],
+            )
+        )
 
     def start_requests(self):
-        components = urlparse(self.start_url)
-        query = parse_qs(components[4])
-        query.pop("pagina", None)
-
         def parse_start_url(res):
             match = re.search(
                 r"\d+\s*/\s*(\d+)",
@@ -48,17 +52,16 @@ class JurisSpider(Spider):
                 return
 
             for i in range(1, int(match.group(1)) + 1):
-                yield Request(rebuild(components, {**query, "pagina": i}))
+                yield Request(self.rebuild({**self.query, "pagina": i}))
 
-        yield Request(rebuild(components, query), callback=parse_start_url)
+        yield Request(self.rebuild(self.query), callback=parse_start_url)
 
     def parse(self, res):
         for d in (
-            Selector(text=ref.sub(repl, res.text))
+            Selector(text=ref.sub(repl_ref, res.text))
             .xpath(
-                u'//p[strong[text()="Doutrina"]]/following-sibling::pre/text()'
+                u'string(//p[strong[text()="Doutrina"]]/following-sibling::pre)'
             )
             .extract()
         ):
-            for s in d.splitlines():
-                yield {"line": unquote(s.strip())}
+            yield {"lines": d.strip()}
