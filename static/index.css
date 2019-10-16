@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+    url('jb.jpg') no-repeat center/cover fixed;
+}
+
+.wrapper {
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  padding: 1rem 5rem;
+  text-align: center;
+}
+
+.main {
+  display: inline-flex;
+  justify-content: center;
+  flex: 1 0;
+  flex-flow: column;
+  padding-bottom: 1rem;
+}
+
+.message:empty {
+  display: none;
+}
+.message > span {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+form {
+  background: rgba(255, 255, 255, 0.75);
+  padding: 1rem;
+}
+section {
+  padding-top: 1rem;
+}
+h1 {
+  font-size: 1.75em;
+  margin-bottom: 1rem;
+}
+label {
+  padding: 0.5rem;
+}
+input[type='url'] {
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+  width: 25rem;
+}
+button {
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+}
+a {
+  color: inherit;
+}
+
+.loader {
+  animation: spin 2s linear infinite;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #989898;
+  border-radius: 50%;
+  height: 60px;
+  margin: 1rem auto 0;
+  width: 60px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
