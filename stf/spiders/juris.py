@@ -1,47 +1,64 @@
-# -*- coding: utf-8 -*-
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+import re
+from urllib.parse import (
+    parse_qs,
+    quote,
+    unquote,
+    urlencode,
+    urlparse,
+    urlunparse,
+)
 
-import scrapy
+from scrapy import Spider
+from scrapy.http import Request
 from scrapy.selector import Selector
 
+ref = re.compile(r"<(https?:[^>]*)>")
 
-class JurisSpider(scrapy.Spider):
+
+def rebuild(components, query):
+    return urlunparse(
+        (*components[:4], urlencode(query, doseq=True), *components[5:])
+    )
+
+
+def repl(match):
+    return quote(match.group(0))
+
+
+class JurisSpider(Spider):
     name = "juris"
     allowed_domains = ["stf.jus.br"]
-    base_url = ""
-    # output = []
 
     def __init__(self, url):
-        scheme, netloc, path, params, query, *_ = urlparse(url)
-        self.base_url = (scheme, netloc, path)
-        self.query = parse_qs(query)
+        self.start_url = url
 
     def start_requests(self):
-        if self.base_url[1] != "stf.jus.br":
-            raise scrapy.exceptions.NotSupported()
-        yield self.make_requests_from_url(self.make_url(1))
+        components = urlparse(self.start_url)
+        query = parse_qs(components[4])
+        query.pop("pagina")
 
-    def make_url(self, page: int):
-        return urlunparse(
-            (
-                *self.base_url,
-                "",
-                urlencode({**self.query, "pagina": page}, doseq=True),
-                "",
+        def parse_start_url(res):
+            match = re.search(
+                r"\d+\s*/\s*(\d+)",
+                res.selector.css(
+                    "#divNaoImprimir > table:nth-child(1) td:nth-child(3)::text"
+                ).extract_first(),
             )
-        )
+            if not match:
+                return
 
-    def parse(self, response):
-        hxs = Selector(response)
+            for i in range(1, int(match.group(1)) + 1):
+                yield Request(rebuild(components, {**query, "pagina": i}))
 
-        if len(hxs.xpath(u'//a[text()=" Próximo >>"]')) > 0:
-            _, _, _, _, query, *_ = urlparse(response.url)
-            page = int(parse_qs(query)["pagina"][0])
-            yield self.make_requests_from_url(self.make_url(page + 1))
+        yield Request(rebuild(components, query), callback=parse_start_url)
 
-        doutrinas = hxs.xpath(
-            u'//p[strong[text()="Doutrina"]]/following-sibling::pre/text()'
-        ).extract()
-        for d in doutrinas:
+    def parse(self, res):
+        for d in (
+            Selector(text=ref.sub(repl, res.text))
+            .xpath(
+                u'//p[strong[text()="Doutrina"]]/following-sibling::pre/text()'
+            )
+            .extract()
+        ):
             for s in d.splitlines():
-                yield {"line": s.strip()}
+                yield {"line": unquote(s.strip())}

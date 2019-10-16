@@ -14,12 +14,11 @@ BOT_NAME = "stf"
 SPIDER_MODULES = ["stf.spiders"]
 NEWSPIDER_MODULE = "stf.spiders"
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'stf (+http://www.yourdomain.com)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 64
+# CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -61,7 +60,7 @@ TELNETCONSOLE_ENABLED = False
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {"stf.pipelines.StfPipeline": 300}
+# ITEM_PIPELINES = {}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -81,7 +80,3 @@ ITEM_PIPELINES = {"stf.pipelines.StfPipeline": 300}
 # HTTPCACHE_DIR='httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES=[]
 # HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-LOG_LEVEL = "INFO"
-
-REACTOR_THREADPOOL_MAXSIZE = 16
