@@ -87,9 +87,17 @@
       })
     }
 
+    let interval
+    const resetInterval = () => {
+      clearInterval(interval)
+      interval = setInterval(reload, 60e3)
+    }
+    resetInterval()
+
     reloadButton.addEventListener('click', e => {
       e.preventDefault()
       reload()
+      resetInterval()
     })
 
     const submitForm = async e => {
