@@ -23,9 +23,7 @@ def index():
 
 @application.route("/jobs/", methods=["GET"])
 def list_jobs():
-    # print([*spider.jobs.iter()])
     return {group["name"]: group["summary"] for group in spider.jobs.summary()}
-    # return reduce(group_by_state, spider.jobs.iter(), {})
 
 
 @application.route("/jobs/", methods=["POST"])
@@ -36,6 +34,18 @@ def create_job():
         return {"key": job.key}, 201
     except DuplicateJobError:
         return "", 425
+
+
+@application.route("/jobs/<int:job_id>.<ext>", methods=["GET"])
+def show_job(job_id: int, ext):
+    key = f"{spider.key}/{job_id}"
+    print(key)
+    job = spider.jobs.get(key)
+    lines = (i["lines"] for i in job.items.iter())
+    if ext == "json":
+        return {"items": [*lines]}
+    if ext == "txt":
+        return "\n\n".join(lines), {"Content-Type": "text/plain; charset=utf-8"}
 
 
 if __name__ == "__main__":

@@ -38,6 +38,10 @@ body {
   background: rgba(255, 255, 255, 0.75);
 }
 
+.download {
+  margin-left: 0.5rem;
+}
+
 form {
   background: rgba(255, 255, 255, 0.75);
   padding: 1rem;

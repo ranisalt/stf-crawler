@@ -1,9 +1,23 @@
 ;(() => {
+  const formats = ['json', 'txt']
   const jobId = key => key.split('/')[2]
 
   const createEntry = ({ key, ts }) => {
     const element = document.createElement('div')
-    element.innerText = `${jobId(key)} - ${new Date(ts).toLocaleString()}`
+
+    const title = document.createElement('span')
+    const id = jobId(key)
+    title.innerText = `${id} - ${new Date(ts).toLocaleString()}`
+    element.appendChild(title)
+
+    for (const format of formats) {
+      const anchor = document.createElement('a')
+      anchor.classList.add('download')
+      anchor.href = `/jobs/${id}.${format}`
+      anchor.innerText = `(${format})`
+      element.appendChild(anchor)
+    }
+
     return element
   }
 
@@ -23,7 +37,7 @@
     if (data.length === 0) {
       const element = document.createElement('div')
       element.innerText = 'Nenhum'
-      node.append(element)
+      node.appendChild(element)
     } else {
       data.map(createEntry).map(e => node.append(e))
     }
@@ -85,7 +99,7 @@
       const body = new FormData(form)
       const res = await fetch(action, {
         body,
-        method
+        method,
       })
 
       if (res.ok) {
