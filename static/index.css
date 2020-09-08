@@ -6,8 +6,7 @@
 
 html,
 body {
-  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
-    url('tiro.min.jpg') no-repeat center/cover fixed;
+  background: linear-gradient(315deg, #b4d2ea 0%, #2196f3 100%);
   display: flex;
   justify-content: center;
   min-height: 100%;
