@@ -14,19 +14,22 @@ body {
 
 .wrapper {
   background: rgba(255, 255, 255, 0.75);
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
   padding: 1rem 5rem;
   text-align: center;
+  width: 48rem;
 }
 
 .main {
-  display: inline-flex;
+  display: flex;
   justify-content: center;
-  flex: 1 0;
   flex-flow: column;
+  margin: 0 auto;
   padding-bottom: 1rem;
+}
+
+.input {
+  display: flex;
+  margin: 0.5rem 0;
 }
 
 .message:empty {
@@ -53,15 +56,20 @@ h1 {
   margin-bottom: 1rem;
 }
 label {
+  flex-grow: 1;
   padding: 0.5rem;
+  text-align: right;
 }
-input[type='url'] {
+input[type='date'],
+input[type='text'] {
   margin: 0 0.5rem;
   padding: 0.5rem;
   width: 25rem;
 }
 button {
+  display: block;
   font-weight: 700;
+  margin: 0.5rem auto;
   padding: 0.5rem 1.25rem;
 }
 a {
@@ -70,12 +78,12 @@ a {
 
 .loader {
   animation: spin 2s linear infinite;
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #989898;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #989898;
   border-radius: 50%;
-  height: 60px;
-  margin: 1rem auto 0;
-  width: 60px;
+  height: 15px;
+  margin: 2px auto;
+  width: 15px;
 }
 
 @keyframes spin {

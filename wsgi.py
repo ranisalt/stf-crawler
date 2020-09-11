@@ -6,8 +6,8 @@ import flask
 from scrapinghub import DuplicateJobError, ScrapinghubClient
 
 application = flask.Flask(__name__)
-hub = ScrapinghubClient(os.environ["SCRAPINGHUB_APIKEY"])
-project = hub.get_project(int(os.environ["SCRAPINGHUB_PROJECT"]))
+hub = ScrapinghubClient()
+project = hub.get_project(int(os.environ["SH_PROJECT"]))
 spider = project.spiders.get("juris")
 
 
@@ -28,9 +28,18 @@ def list_jobs():
 
 @application.route("/jobs/", methods=["POST"])
 def create_job():
-    url = flask.request.form["url"]
+    query = flask.request.form["query"]
+    if not query:
+        return "É necessário informar uma busca!", 425
+
+    date_from = flask.request.form["date_from"]
+    date_to = flask.request.form["date_to"]
+
     try:
-        job = spider.jobs.run(job_args={"url": url}, meta={"url": url})
+        job = spider.jobs.run(
+            job_args={"date_from": date_from, "date_to": date_to, "query": query},
+            meta={"key": f"{query}/{date_from}-{date_to}"},
+        )
         return {"key": job.key}, 201
     except DuplicateJobError:
         return "", 425
@@ -45,7 +54,7 @@ def show_job(job_id: int, ext):
     if ext == "json":
         return {"items": [*lines]}
     if ext == "txt":
-        return "\n\n".join(lines), {"Content-Type": "text/plain; charset=utf-8"}
+        return "\n\n".join(["\n\n".join(line) for line in lines]), {"Content-Type": "text/plain; charset=utf-8"}
 
 
 if __name__ == "__main__":

@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head lang="en">
-    <meta charset="utf-8" />
-    <title>Referências do STF</title>
-    <link
-      href="{{ url_for('static', filename= 'index.css') }}"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="wrapper">
-      <div class="main">
-        <h1>Catador de referências do Angelo</h1>
-        <form class="form" method="post" action="/jobs/">
-          <label for="filter">Filtro:</label>
-          <input type="url" name="url" />
-          <button type="submit">VAI!</button>
-        </form>
-        <section class="message"></section>
-        <section class="running">
-          <h3>Em execução</h3>
-          <div class="slot loader"></div>
-        </section>
-        <section class="pending">
-          <h3>Pendentes</h3>
-          <div class="slot loader"></div>
-        </section>
-        <section class="finished">
-          <h3>Completados</h3>
-          <div class="slot loader"></div>
-        </section>
-        <section class="controls">
-          <button class="reload">Recarregar</button>
-          <p>
-            <small>
-              Os resultados recarregam automaticamente a cada minuto.
-            </small>
-          </p>
-        </section>
-      </div>
-      <div class="footer">
-        <h5>
-          Feito pelo Ranieri.
-          <a href="https://github.com/ranisalt/stf-crawler">Código fonte.</a>
-        </h5>
-      </div>
+
+<head lang="en">
+  <meta charset="utf-8" />
+  <title>Referências do STF</title>
+  <link href="{{ url_for('static', filename= 'index.css') }}" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="main">
+      <h1>Catador de referências do Angelo</h1>
+      <form class="form" method="post" action="/jobs/">
+        <div>
+          <div class="input">
+            <label for="query">Busca:</label>
+            <input type="text" name="query" required />
+          </div>
+          <div class="input">
+            <label for="date_from">De:</label>
+            <input type="date" name="date_from" />
+          </div>
+          <div class="input">
+            <label for="date_to">Até:</label>
+            <input type="date" name="date_to" />
+          </div>
+        </div>
+        <button type="submit">VAI!</button>
+      </form>
+      <section class="message"></section>
+      <section class="running">
+        <h3>Em execução</h3>
+        <div class="slot loader"></div>
+      </section>
+      <section class="pending">
+        <h3>Pendentes</h3>
+        <div class="slot loader"></div>
+      </section>
+      <section class="finished">
+        <h3>Completados</h3>
+        <div class="slot loader"></div>
+      </section>
+      <section class="controls">
+        <button class="reload">Recarregar</button>
+        <p>
+          <small>
+            Os resultados recarregam automaticamente a cada minuto.
+          </small>
+        </p>
+      </section>
     </div>
-    <script src="{{ url_for('static', filename= 'index.js') }}"></script>
-  </body>
+    <div class="footer">
+      <h5>
+        Feito pelo Ranieri.
+        <a href="https://github.com/ranisalt/stf-crawler">Código fonte.</a>
+      </h5>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename= 'index.js') }}"></script>
+</body>
+
 </html>
